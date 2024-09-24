@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from random import randint
+from random import randint, uniform
 
 @dataclass
 class Item:
@@ -23,7 +23,14 @@ def create_knapsack_problem_instance(itens_amount, max_knapsack_weight, min_item
     
     return instance
 
+def set_initial_state(instance, item_probability):
+    for i in range(instance.itens_amount):
+        if uniform(0, 1) <= (instance.itens_amount * item_probability) / instance.itens_amount:
+            instance.solution[i] = 1
+
 if __name__ == '__main__':
     instance = create_knapsack_problem_instance(20, 500, 1, 50, 1, 100)
+
+    set_initial_state(instance, 0.1)
     
     print(instance.__dict__)
