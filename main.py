@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import math
 import random
 
 @dataclass
@@ -28,11 +29,11 @@ def set_initial_state(instance, item_probability):
         if random.uniform(0, 1) <= (instance.itens_amount * item_probability) / instance.itens_amount:
             instance.solution[i] = 1
 
-def objective(instance):
+def objective(instance, state):
     total_weight, total_value_inserted, total_value = 0, 0, 0
 
     for i in range(instance.itens_amount):
-        if instance.solution[i] == 1:
+        if state[i] == 1:
             total_value_inserted += instance.itens[i].value
             total_weight += instance.itens[i].weight
         
@@ -48,11 +49,28 @@ def get_random_neighbour_state(instance):
 
     return neighbour_state
 
+def simulated_annealing(instance):
+    temperature, old_temperature, iteration_state = 100, 0, instance.solution
+
+    while temperature != old_temperature:
+        for _ in range(100):
+            neighbour_state = get_random_neighbour_state(instance)
+            objective_difference = objective(instance, iteration_state) - objective(instance, neighbour_state)
+
+            if objective_difference < 0:
+                iteration_state = neighbour_state
+
+                if objective(instance, neighbour_state) > objective(instance, instance.solution):
+                    instance.solution = iteration_state
+            elif random.uniform(0, 1) < math.exp(-objective_difference / temperature):
+                iteration_state = neighbour_state
+        
+        old_temperature = temperature
+        temperature *= 0.95
+
 if __name__ == '__main__':
-    instance = create_knapsack_problem_instance(20, 500, 1, 50, 1, 100)
+    instance = create_knapsack_problem_instance(100, 500, 1, 50, 1, 100)
 
     set_initial_state(instance, 0.1)
-    
+    simulated_annealing(instance)
     print(instance.__dict__)
-    print(objective(instance))
-    print(get_random_neighbour_state(instance))
