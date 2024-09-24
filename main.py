@@ -29,14 +29,16 @@ def set_initial_state(instance, item_probability):
             instance.solution[i] = 1
 
 def objective(instance):
-    total_weight, total_value = 0, 0
+    total_weight, total_value_inserted, total_value = 0, 0, 0
 
     for i in range(instance.itens_amount):
         if instance.solution[i] == 1:
+            total_value_inserted += instance.itens[i].value
             total_weight += instance.itens[i].weight
-            total_value += instance.itens[i].value / instance.itens[i].weight
+        
+        total_value += instance.itens[i].value
 
-    return total_value - total_weight * (1 if total_weight > instance.max_weight else 0)
+    return total_value_inserted - total_value * max(0, total_weight - instance.max_weight)
 
 if __name__ == '__main__':
     instance = create_knapsack_problem_instance(20, 500, 1, 50, 1, 100)
