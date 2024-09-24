@@ -28,9 +28,20 @@ def set_initial_state(instance, item_probability):
         if uniform(0, 1) <= (instance.itens_amount * item_probability) / instance.itens_amount:
             instance.solution[i] = 1
 
+def objective(instance):
+    total_weight, total_value = 0, 0
+
+    for i in range(instance.itens_amount):
+        if instance.solution[i] == 1:
+            total_weight += instance.itens[i].weight
+            total_value += instance.itens[i].value / instance.itens[i].weight
+
+    return total_value - total_weight * (1 if total_weight > instance.max_weight else 0)
+
 if __name__ == '__main__':
     instance = create_knapsack_problem_instance(20, 500, 1, 50, 1, 100)
 
     set_initial_state(instance, 0.1)
     
     print(instance.__dict__)
+    print(objective(instance))
