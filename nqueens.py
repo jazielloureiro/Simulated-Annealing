@@ -31,6 +31,16 @@ def objective(instance, state):
 
     return conflicts
 
+def get_random_neighbour_state(state):
+    neighbour_state = state[:]
+    item_index = random.randrange(len(neighbour_state))
+    old_indexed_value = neighbour_state[item_index]
+
+    while neighbour_state[item_index] == old_indexed_value:
+        neighbour_state[item_index] = random.randrange(len(neighbour_state))
+
+    return neighbour_state
+
 if __name__ == '__main__':
     instance = create_nqueens_problem_instance(8)
 
@@ -38,3 +48,4 @@ if __name__ == '__main__':
 
     print(instance.__dict__)
     print(objective(instance, instance.solution))
+    print(get_random_neighbour_state(instance.solution))
