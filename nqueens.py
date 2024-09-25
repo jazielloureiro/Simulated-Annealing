@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import math
 import random
 
 @dataclass
@@ -41,11 +42,43 @@ def get_random_neighbour_state(state):
 
     return neighbour_state
 
+def get_initial_temperature(instance, state):
+    mean = 0
+
+    for _ in range(1000):
+        state = get_random_neighbour_state(state)
+
+        objective_value = objective(instance, state)
+
+        mean += objective_value / 1000 if objective_value > 0 else 0
+    
+    return mean * math.log(30)
+
+def simulated_annealing(instance):
+    temperature, old_temperature, iteration_state = 0, 0, instance.solution
+
+    temperature = get_initial_temperature(instance, instance.solution)
+
+    while temperature != old_temperature:
+        for _ in range(100):
+            neighbour_state = get_random_neighbour_state(iteration_state)
+            objective_difference = objective(instance, neighbour_state) - objective(instance, iteration_state)
+
+            if objective_difference < 0:
+                iteration_state = neighbour_state
+
+                if objective(instance, neighbour_state) < objective(instance, instance.solution):
+                    instance.solution = iteration_state
+            elif random.uniform(0, 1) < math.exp(-objective_difference / temperature):
+                iteration_state = neighbour_state
+        
+        old_temperature = temperature
+        temperature *= 0.95
+
 if __name__ == '__main__':
     instance = create_nqueens_problem_instance(8)
 
     set_initial_state(instance)
+    simulated_annealing(instance)
 
     print(instance.__dict__)
-    print(objective(instance, instance.solution))
-    print(get_random_neighbour_state(instance.solution))
