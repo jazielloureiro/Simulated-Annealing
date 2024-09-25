@@ -1,4 +1,5 @@
 ## Simulated Annealing: Knapsack Problem & N-Queens Problem
+![Diagrama do Projeto](./assets/design_readme.png)
 
 ### Descrição Geral
 Este projeto consiste em duas implementações do algoritmo de **Simulated Annealing** (ou **Resfriamento Simulado**) para resolver dois problemas clássicos de otimização: o **Problema da Mochila (Knapsack)** e o **Problema das N-Rainhas (N-Queens)**. Simulated Annealing é um algoritmo de busca global que simula o processo físico de resfriamento gradual de materiais para encontrar soluções ótimas ou quase ótimas em problemas complexos.
